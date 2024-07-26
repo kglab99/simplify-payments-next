@@ -89,7 +89,6 @@ export default function CreateGroup({ addGroup }) {
           </Listbox>
         )}
       </div>
-      <Link className="self-center" to="/create-group">
         <Button
           variant="flat"
           size="md"
@@ -101,7 +100,6 @@ export default function CreateGroup({ addGroup }) {
         >
           Create group
         </Button>
-      </Link>
     </div>
   );
 }

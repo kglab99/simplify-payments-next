@@ -17,7 +17,7 @@ export default function HomePage({ groups }) {
 
   return (
     <div className="flex flex-col ">
-      <Navbar isBordered={true} isBlurred={true}>
+      <Navbar maxWidth="full" isBordered={true} isBlurred={true}>
         <NavbarBrand>
           <p className="font-bold text-inherit">Simplify Payments</p>
         </NavbarBrand>

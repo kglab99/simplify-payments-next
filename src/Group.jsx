@@ -40,6 +40,11 @@ const Group = ({ groups, addExpense, expenses, finalTransactions }) => {
   const groupExpenses = expenses[groupId] || [];
   const groupTransactions = finalTransactions[groupId] || [];
 
+  // Sort transactions from largest to smallest amount
+  const sortedTransactions = [...groupTransactions].sort(
+    (a, b) => b.amount - a.amount
+  );
+
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
   const [payer, setPayer] = useState("");
@@ -72,7 +77,12 @@ const Group = ({ groups, addExpense, expenses, finalTransactions }) => {
 
   return (
     <div className="flex flex-col ">
-      <Navbar isBordered={true} isBlurred={true} className="pl-0">
+      <Navbar
+        maxWidth="full"
+        isBordered={true}
+        isBlurred={true}
+        className="pl-0"
+      >
         <Link to="/">
           <Button isIconOnly variant="light" aria-label="Like">
             <ArrowBackIosNewIcon />
@@ -116,7 +126,7 @@ const Group = ({ groups, addExpense, expenses, finalTransactions }) => {
 
             <Tab title="Settlements">
               <Listbox>
-                {groupTransactions.map((transaction, index) => (
+                {sortedTransactions.map((transaction, index) => (
                   <ListboxItem showDivider key={index}>
                     <p className="">
                       {group.users[transaction.from]} owes{" "}
