@@ -10,7 +10,8 @@ import Group from "./Group";
 
 export default function App() {
   const navigate = useNavigate();
-  const { groups, expenses, debts, addGroup, addExpense, finalTransactions } = useAppState();
+  const { groups, expenses, debts, addGroup, addExpense, updateGroup, finalTransactions } =
+    useAppState();
 
   return (
     <NextUIProvider navigate={navigate}>
@@ -29,6 +30,7 @@ export default function App() {
               expenses={expenses}
               debts={debts}
               finalTransactions={finalTransactions}
+              updateGroup={updateGroup}
             />
           }
         />

@@ -29,8 +29,16 @@ import {
 import { CheckboxGroup, Checkbox } from "@nextui-org/checkbox";
 import { Select, SelectItem } from "@nextui-org/react";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { v4 as uuidv4 } from "uuid";
+import EditIcon from "@mui/icons-material/Edit";
 
-const Group = ({ groups, addExpense, expenses, finalTransactions }) => {
+const Group = ({
+  groups,
+  addExpense,
+  expenses,
+  updateGroup,
+  finalTransactions,
+}) => {
   const { groupId } = useParams();
   const numericGroupId = parseInt(groupId, 10); // Ensure numeric ID
   const group = groups.find((group) => group.id === groupId);
@@ -50,6 +58,14 @@ const Group = ({ groups, addExpense, expenses, finalTransactions }) => {
   const [payer, setPayer] = useState("");
 
   const [participants, setParticipants] = useState([]);
+  const [isEditingGroup, setIsEditingGroup] = useState(false);
+  const [updatedGroupName, setUpdatedGroupName] = useState(group.groupName);
+  const [updatedUsers, setUpdatedUsers] = useState(group.users);
+  const [newUserName, setNewUserName] = useState("");
+
+  const sortedGroupUsers = Object.entries(group.users).sort(
+    ([, nameA], [, nameB]) => nameA.localeCompare(nameB)
+  );
 
   if (!group) {
     return <p>Group not found</p>;
@@ -73,6 +89,21 @@ const Group = ({ groups, addExpense, expenses, finalTransactions }) => {
         ? prevParticipants.filter((participantId) => participantId !== id)
         : [...prevParticipants, id]
     );
+  };
+
+  const handleSaveGroupChanges = () => {
+    updateGroup(groupId, updatedGroupName, updatedUsers);
+    setIsEditingGroup(false);
+  };
+
+  const handleAddNewUser = () => {
+    if (newUserName) {
+      setUpdatedUsers((prevUsers) => ({
+        ...prevUsers,
+        [uuidv4()]: newUserName,
+      }));
+      setNewUserName("");
+    }
   };
 
   return (
@@ -137,15 +168,42 @@ const Group = ({ groups, addExpense, expenses, finalTransactions }) => {
                 ))}
               </Listbox>
             </Tab>
-
             <Tab title="Group">
-              <Listbox>
-                {Object.entries(group.users).map(([id, name]) => (
-                  <ListboxItem key={id}>
-                    <p className="">{name}</p>
-                  </ListboxItem>
-                ))}
-              </Listbox>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-2 grid grid-cols-2 gap-4">
+                  <Listbox>
+                    {sortedGroupUsers
+                      .slice(0, Math.ceil(sortedGroupUsers.length / 2))
+                      .map(([id, name]) => (
+                        <ListboxItem key={id}>
+                          <p className="">{name}</p>
+                        </ListboxItem>
+                      ))}
+                  </Listbox>
+                  <Listbox>
+                    {sortedGroupUsers
+                      .slice(Math.ceil(sortedGroupUsers.length / 2))
+                      .map(([id, name]) => (
+                        <ListboxItem key={id}>
+                          <p className="">{name}</p>
+                        </ListboxItem>
+                      ))}
+                  </Listbox>
+                </div>
+
+                <div className="flex justify-end">
+                  <Button
+                    onPress={() => setIsEditingGroup(true)}
+                    variant="flat"
+                    size="md"
+                    radius="sm"
+                    startContent={<EditIcon />}
+                    className="text-black"
+                  >
+                    Edit
+                  </Button>
+                </div>
+              </div>
             </Tab>
           </Tabs>
         </div>
@@ -220,6 +278,80 @@ const Group = ({ groups, addExpense, expenses, finalTransactions }) => {
             <ModalFooter></ModalFooter>
           </ModalContent>
         </Modal>
+
+        <Modal
+          isOpen={isEditingGroup}
+          onClose={() => setIsEditingGroup(false)}
+          backdrop="blur"
+        >
+          <ModalContent>
+            <ModalHeader>Edit Group</ModalHeader>
+            <ModalBody>
+              <Input
+                variant="bordered"
+                label="Group Name"
+                value={updatedGroupName}
+                onChange={(e) => setUpdatedGroupName(e.target.value)}
+              />
+              <div>
+                {Object.entries(updatedUsers).map(([id, userName]) => (
+                  <div key={id} className="flex items-center mb-2">
+                    <Input
+                      value={userName}
+                      onChange={(e) => {
+                        const newUsers = {
+                          ...updatedUsers,
+                          [id]: e.target.value,
+                        };
+                        setUpdatedUsers(newUsers);
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center space-x-2">
+                <Input
+                  variant="flat"
+                  size="sm"
+                  label="New Member Name"
+                  value={newUserName}
+                  onChange={(e) => setNewUserName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddNewUser();
+                    }
+                  }}
+                />
+                <Button
+                  isIconOnly
+                  variant="flat"
+                  size="lg"
+                  radius="sm"
+                  // color="primary"
+                  className="text-black"
+                  onClick={handleAddNewUser}
+                >
+                  <AddIcon />
+                </Button>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                onPress={handleSaveGroupChanges}
+                variant="flat"
+                size="md"
+                fullWidth
+                //   color="primary"
+                radius="sm"
+                startContent={<AddIcon />}
+                className="text-black"
+              >
+                Save Changes{" "}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
         <Button
           onPress={onOpen}
           variant="flat"

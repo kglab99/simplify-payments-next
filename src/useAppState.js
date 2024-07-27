@@ -152,6 +152,18 @@ export function useAppState() {
     setGroups((prevGroups) => [...prevGroups, newGroup]);
   };
 
+  const updateGroup = (groupId, updatedGroupName, updatedUsers) => {
+    setGroups((prevGroups) => {
+      return prevGroups.map((group) => {
+        if (group.id === groupId) {
+          const newUsers = { ...group.users, ...updatedUsers };
+          return { ...group, groupName: updatedGroupName, users: newUsers };
+        }
+        return group;
+      });
+    });
+  };
+
   const addExpense = (groupId, expenseName, amount, payer, participants) => {
     const numParticipants = participants.length;
     const share = amount / numParticipants;
@@ -203,6 +215,7 @@ export function useAppState() {
     expenses,
     creditedExpenses,
     debts,
+    updateGroup,
     canceledReversedDebts,
     finalTransactions,
     addGroup,
