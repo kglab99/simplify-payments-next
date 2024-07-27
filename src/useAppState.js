@@ -208,6 +208,14 @@ export function useAppState() {
     });
   };
 
+  const deleteGroup = (groupId) => {
+    setGroups((prevGroups) => prevGroups.filter((group) => group.id !== groupId));
+    setExpenses((prevExpenses) => {
+      const { [groupId]: _, ...remainingExpenses } = prevExpenses;
+      return remainingExpenses;
+    });
+  };
+
   const logFinalTransactionsWithNames = () => {
     const userIdToName = getUserIdToNameMapping(groups);
     const transactionsWithNames = transformTransactionsToNames(
@@ -233,6 +241,7 @@ export function useAppState() {
     updateExpense,
     addGroup,
     addExpense,
+    deleteGroup, // Export deleteGroup function
     logFinalTransactionsWithNames, // Export function if needed
   };
 }

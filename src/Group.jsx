@@ -1,10 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-} from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import { Button } from "@nextui-org/button";
@@ -26,18 +22,26 @@ import { Select, SelectItem } from "@nextui-org/react";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import { v4 as uuidv4 } from "uuid";
 import EditIcon from "@mui/icons-material/Edit";
+import { useNavigate } from "react-router-dom";
 
 const Group = ({
   groups,
   addExpense,
   expenses,
   updateGroup,
+  deleteGroup,
   finalTransactions,
 }) => {
   const { groupId } = useParams();
   const numericGroupId = parseInt(groupId, 10); // Ensure numeric ID
   const group = groups.find((group) => group.id === groupId);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onOpenChange: onDeleteOpenChange,
+  } = useDisclosure();
+  const navigate = useNavigate();
 
   // State variables
   const [amount, setAmount] = useState("");
@@ -97,9 +101,20 @@ const Group = ({
     }
   };
 
+  const handleDeleteGroup = () => {
+    deleteGroup(groupId);
+    onDeleteOpenChange(); // Close the confirm delete modal
+    navigate('/');
+  };
+
   return (
     <div className="flex flex-col ">
-      <Navbar maxWidth="full" isBordered={true} isBlurred={true} className="pl-0">
+      <Navbar
+        maxWidth="full"
+        isBordered={true}
+        isBlurred={true}
+        className="pl-0"
+      >
         <Link to="/">
           <Button isIconOnly variant="light" aria-label="Like">
             <ArrowBackIosNewIcon />
@@ -241,11 +256,7 @@ const Group = ({
                 onChange={(checkedValues) => setParticipants(checkedValues)}
               >
                 {Object.entries(group.users).map(([id, name]) => (
-                  <Checkbox
-                    key={id}
-                    value={id}
-                    sx={{ minWidth: "100px" }}
-                  >
+                  <Checkbox key={id} value={id} sx={{ minWidth: "100px" }}>
                     {name}
                   </Checkbox>
                 ))}
@@ -272,7 +283,7 @@ const Group = ({
           backdrop="blur"
           scrollBehavior="inside"
         >
-          <ModalContent >
+          <ModalContent>
             <ModalHeader>Edit Group</ModalHeader>
             <ModalBody>
               <Input
@@ -321,8 +332,22 @@ const Group = ({
                   <AddIcon />
                 </Button>
               </div>
+              <div className="flex space-x-2">
+              <Button
+                variant="flat"
+                size="md"
+                radius="sm"
+                fullWidth
+                className="text-red-500"
+                onPress={onDeleteOpen}
+              >
+                Delete Group
+              </Button>
+            </div>
+
             </ModalBody>
             <ModalFooter>
+                
               <Button
                 onPress={handleSaveGroupChanges}
                 variant="flat"
@@ -333,6 +358,43 @@ const Group = ({
                 className="text-black"
               >
                 Save Changes
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        <Modal
+          isOpen={isDeleteOpen}
+          onClose={onDeleteOpenChange}
+          backdrop="blur"
+          scrollBehavior="inside"
+        >
+          <ModalContent>
+            <ModalHeader>Confirm Delete Group</ModalHeader>
+            <ModalBody>
+              <p>
+                Are you sure you want to delete this group? This action cannot
+                be undone.
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                variant="flat"
+                size="md"
+                radius="sm"
+                className="text-black"
+                onPress={onDeleteOpenChange}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="flat"
+                size="md"
+                radius="sm"
+                className="text-red-500"
+                onPress={handleDeleteGroup}
+              >
+                Confirm Delete
               </Button>
             </ModalFooter>
           </ModalContent>

@@ -10,17 +10,13 @@ import Group from "./Group";
 
 export default function App() {
   const navigate = useNavigate();
-  const { groups, expenses, debts, addGroup, addExpense, updateGroup, updateExpense, finalTransactions } =
-    useAppState();
+  const { groups, expenses, debts, addGroup, addExpense, updateGroup, updateExpense, finalTransactions, deleteGroup } = useAppState();
 
   return (
     <NextUIProvider navigate={navigate}>
       <Routes>
         <Route exact path="/" element={<HomePage groups={groups} />} />
-        <Route
-          path="/create-group"
-          element={<CreateGroup addGroup={addGroup} />}
-        />
+        <Route path="/create-group" element={<CreateGroup addGroup={addGroup} />} />
         <Route
           path="/group/:groupId"
           element={
@@ -32,6 +28,7 @@ export default function App() {
               finalTransactions={finalTransactions}
               updateGroup={updateGroup}
               updateExpense={updateExpense}
+              deleteGroup={deleteGroup}
             />
           }
         />
