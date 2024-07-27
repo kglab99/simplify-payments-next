@@ -1,20 +1,17 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  NavbarItem,
 } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
-import { useNavigate } from "react-router-dom";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
-
-import { Button, ButtonGroup } from "@nextui-org/button";
+import { Button } from "@nextui-org/button";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { Link } from "react-router-dom";
-import { Listbox, ListboxSection, ListboxItem } from "@nextui-org/listbox";
+import { Listbox, ListboxItem } from "@nextui-org/listbox";
 import { Tabs, Tab } from "@nextui-org/tabs";
 import {
   Modal,
@@ -23,8 +20,6 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
-  RadioGroup,
-  Radio,
 } from "@nextui-org/react";
 import { CheckboxGroup, Checkbox } from "@nextui-org/checkbox";
 import { Select, SelectItem } from "@nextui-org/react";
@@ -42,44 +37,48 @@ const Group = ({
   const { groupId } = useParams();
   const numericGroupId = parseInt(groupId, 10); // Ensure numeric ID
   const group = groups.find((group) => group.id === groupId);
-  const [open, setOpen] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  // Retrieve expenses for the current groupId
-  const groupExpenses = expenses[groupId] || [];
-  const groupTransactions = finalTransactions[groupId] || [];
 
-  // Sort transactions from largest to smallest amount
-  const sortedTransactions = [...groupTransactions].sort(
-    (a, b) => b.amount - a.amount
-  );
-
+  // State variables
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
   const [payer, setPayer] = useState("");
-
   const [participants, setParticipants] = useState([]);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
   const [updatedGroupName, setUpdatedGroupName] = useState(group.groupName);
   const [updatedUsers, setUpdatedUsers] = useState(group.users);
   const [newUserName, setNewUserName] = useState("");
 
+  // Retrieve expenses and transactions
+  const groupExpenses = expenses[groupId] || [];
+  const groupTransactions = finalTransactions[groupId] || [];
+  const sortedTransactions = [...groupTransactions].sort(
+    (a, b) => b.amount - a.amount
+  );
+
   const sortedGroupUsers = Object.entries(group.users).sort(
     ([, nameA], [, nameB]) => nameA.localeCompare(nameB)
   );
+
+  useEffect(() => {
+    if (isOpen) {
+      // Select all users when the modal opens
+      setParticipants(Object.keys(group.users));
+    }
+  }, [isOpen, group.users]);
 
   if (!group) {
     return <p>Group not found</p>;
   }
 
   const handleAddExpense = () => {
-    if (amount != 0 && name != "") {
+    if (amount !== "" && name !== "") {
       addExpense(group.id, name, amount, payer, participants);
       setName("");
       setAmount("");
       setPayer("");
       setParticipants([]);
-      setOpen(false);
-      onOpenChange();
+      onOpenChange(); // Close modal after adding expense
     }
   };
 
@@ -108,12 +107,7 @@ const Group = ({
 
   return (
     <div className="flex flex-col ">
-      <Navbar
-        maxWidth="full"
-        isBordered={true}
-        isBlurred={true}
-        className="pl-0"
-      >
+      <Navbar maxWidth="full" isBordered={true} isBlurred={true} className="pl-0">
         <Link to="/">
           <Button isIconOnly variant="light" aria-label="Like">
             <ArrowBackIosNewIcon />
@@ -144,7 +138,7 @@ const Group = ({
                         }`}
                       >
                         {Object.entries(expense.debtors).map(([id, share]) => (
-                          <p key={id} className="">
+                          <p key={id}>
                             {group.users[id]} owes ${share.toFixed(2)}
                           </p>
                         ))}
@@ -159,7 +153,7 @@ const Group = ({
               <Listbox>
                 {sortedTransactions.map((transaction, index) => (
                   <ListboxItem showDivider key={index}>
-                    <p className="">
+                    <p>
                       {group.users[transaction.from]} owes{" "}
                       {group.users[transaction.to]} $
                       {transaction.amount.toFixed(2)}
@@ -176,7 +170,7 @@ const Group = ({
                       .slice(0, Math.ceil(sortedGroupUsers.length / 2))
                       .map(([id, name]) => (
                         <ListboxItem key={id}>
-                          <p className="">{name}</p>
+                          <p>{name}</p>
                         </ListboxItem>
                       ))}
                   </Listbox>
@@ -185,7 +179,7 @@ const Group = ({
                       .slice(Math.ceil(sortedGroupUsers.length / 2))
                       .map(([id, name]) => (
                         <ListboxItem key={id}>
-                          <p className="">{name}</p>
+                          <p>{name}</p>
                         </ListboxItem>
                       ))}
                   </Listbox>
@@ -248,13 +242,15 @@ const Group = ({
                   </SelectItem>
                 ))}
               </Select>
-              <CheckboxGroup label="Participants" className="my-4">
+              <CheckboxGroup
+                label="Participants"
+                className="my-4"
+                value={participants}
+                onChange={(checkedValues) => setParticipants(checkedValues)}
+              >
                 {Object.entries(group.users).map(([id, name]) => (
                   <Checkbox
                     key={id}
-                    checked={participants.includes(id)}
-                    onChange={() => handleParticipantChange(id)}
-                    tabIndex={0}
                     value={id}
                     sx={{ minWidth: "100px" }}
                   >
@@ -267,7 +263,6 @@ const Group = ({
                 onClick={handleAddExpense}
                 variant="flat"
                 size="md"
-                //   color="primary"
                 radius="sm"
                 startContent={<AddIcon />}
                 className="text-black"
@@ -327,7 +322,6 @@ const Group = ({
                   variant="flat"
                   size="lg"
                   radius="sm"
-                  // color="primary"
                   className="text-black"
                   onClick={handleAddNewUser}
                 >
@@ -341,12 +335,11 @@ const Group = ({
                 variant="flat"
                 size="md"
                 fullWidth
-                //   color="primary"
                 radius="sm"
                 startContent={<AddIcon />}
                 className="text-black"
               >
-                Save Changes{" "}
+                Save Changes
               </Button>
             </ModalFooter>
           </ModalContent>
@@ -356,7 +349,6 @@ const Group = ({
           onPress={onOpen}
           variant="flat"
           size="md"
-          //   color="primary"
           radius="sm"
           startContent={<AddIcon />}
           className="text-black"
