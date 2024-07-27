@@ -1,22 +1,32 @@
-import { Button, ButtonGroup } from "@nextui-org/button";
-import AddIcon from "@mui/icons-material/Add";
-import HomePage from "./HomePage";
-import { BrowserRouter, useNavigate } from "react-router-dom";
-import { NextUIProvider } from "@nextui-org/react";
+import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import CreateGroup from "./CreateGroup";
 import { useAppState } from "./useAppState";
-import Group from "./Group";
+import Loading from "./Loading";
+const HomePage = React.lazy(() => import("./HomePage"));
+const CreateGroup = React.lazy(() => import("./CreateGroup"));
+const Group = React.lazy(() => import("./Group"));
 
 export default function App() {
-  const navigate = useNavigate();
-  const { groups, expenses, debts, addGroup, addExpense, updateGroup, updateExpense, finalTransactions, deleteGroup } = useAppState();
+  const {
+    groups,
+    expenses,
+    debts,
+    addGroup,
+    addExpense,
+    updateGroup,
+    updateExpense,
+    finalTransactions,
+    deleteGroup,
+  } = useAppState();
 
   return (
-    <NextUIProvider navigate={navigate}>
+    <Suspense fallback={<Loading />}>
       <Routes>
         <Route exact path="/" element={<HomePage groups={groups} />} />
-        <Route path="/create-group" element={<CreateGroup addGroup={addGroup} />} />
+        <Route
+          path="/create-group"
+          element={<CreateGroup addGroup={addGroup} />}
+        />
         <Route
           path="/group/:groupId"
           element={
@@ -33,6 +43,6 @@ export default function App() {
           }
         />
       </Routes>
-    </NextUIProvider>
+    </Suspense>
   );
 }
