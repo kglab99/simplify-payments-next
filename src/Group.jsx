@@ -82,14 +82,6 @@ const Group = ({
     }
   };
 
-  const handleParticipantChange = (id) => {
-    setParticipants((prevParticipants) =>
-      prevParticipants.includes(id)
-        ? prevParticipants.filter((participantId) => participantId !== id)
-        : [...prevParticipants, id]
-    );
-  };
-
   const handleSaveGroupChanges = () => {
     updateGroup(groupId, updatedGroupName, updatedUsers);
     setIsEditingGroup(false);
@@ -278,8 +270,9 @@ const Group = ({
           isOpen={isEditingGroup}
           onClose={() => setIsEditingGroup(false)}
           backdrop="blur"
+          scrollBehavior="inside"
         >
-          <ModalContent>
+          <ModalContent >
             <ModalHeader>Edit Group</ModalHeader>
             <ModalBody>
               <Input

@@ -196,6 +196,18 @@ export function useAppState() {
     });
   };
 
+  const updateExpense = (groupId, oldExpenseName, newExpense) => {
+    setExpenses((prevExpenses) => {
+      const updatedExpenses = {
+        ...prevExpenses,
+        [groupId]: prevExpenses[groupId].map((expense) =>
+          expense.expenseName === oldExpenseName ? newExpense : expense
+        ),
+      };
+      return updatedExpenses;
+    });
+  };
+
   const logFinalTransactionsWithNames = () => {
     const userIdToName = getUserIdToNameMapping(groups);
     const transactionsWithNames = transformTransactionsToNames(
@@ -218,6 +230,7 @@ export function useAppState() {
     updateGroup,
     canceledReversedDebts,
     finalTransactions,
+    updateExpense,
     addGroup,
     addExpense,
     logFinalTransactionsWithNames, // Export function if needed

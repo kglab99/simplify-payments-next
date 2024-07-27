@@ -10,7 +10,7 @@ import Group from "./Group";
 
 export default function App() {
   const navigate = useNavigate();
-  const { groups, expenses, debts, addGroup, addExpense, updateGroup, finalTransactions } =
+  const { groups, expenses, debts, addGroup, addExpense, updateGroup, updateExpense, finalTransactions } =
     useAppState();
 
   return (
@@ -31,6 +31,7 @@ export default function App() {
               debts={debts}
               finalTransactions={finalTransactions}
               updateGroup={updateGroup}
+              updateExpense={updateExpense}
             />
           }
         />
