@@ -24,6 +24,7 @@ import { v4 as uuidv4 } from "uuid";
 import AddExpenseModal from "./modals/AddExpenseModal";
 import EditGroupModal from "./modals/EditGroupModal";
 import ConfirmDeleteGroupModal from "./modals/ConfirmDeleteGroupModal";
+import EditExpenseModal from './modals/EditExpenseModal'
 
 const Group = ({
   groups,
@@ -53,6 +54,8 @@ const Group = ({
   const [updatedGroupName, setUpdatedGroupName] = useState(group.groupName);
   const [updatedUsers, setUpdatedUsers] = useState(group.users);
   const [newUserName, setNewUserName] = useState("");
+  const [isEditingExpenseOpen, setIsEditingExpense] = useState(false);
+
 
   // Retrieve expenses and transactions
   const groupExpenses = expenses[groupId] || [];
@@ -140,12 +143,29 @@ const Group = ({
                           expense.amount
                         } paid by ${group.users[expense.creditor]}`}
                       >
-                        {Object.entries(expense.debtors).map(([id, share]) => (
-                          <p key={id}>
-                            {group.users[id]} owes {selectedCurrency}
-                            {share.toFixed(2)}
-                          </p>
-                        ))}
+                        <div className="flex justify-between">
+                          <div className="flex flex-col">
+                            {Object.entries(expense.debtors).map(
+                              ([id, share]) => (
+                                <p key={id}>
+                                  {group.users[id]} owes {selectedCurrency}
+                                  {share.toFixed(2)}
+                                </p>
+                              )
+                            )}
+                          </div>
+                          <div className="flex justify-end">
+                            <Button
+                              onPress={() => setIsEditingExpense(true)}
+                              variant="light"
+                              isIconOnly
+                              size="md"
+                              radius="sm"
+                              startContent={<EditIcon />}
+                            >
+                            </Button>
+                          </div>
+                        </div>
                       </AccordionItem>
                     </Accordion>
                   </ListboxItem>
@@ -217,6 +237,11 @@ const Group = ({
           setParticipants={setParticipants}
           group={group}
           handleAddExpense={handleAddExpense}
+        />
+
+        <EditExpenseModal 
+        isEditingExpenseOpen={isEditingExpenseOpen}
+        setIsEditingExpense={setIsEditingExpense}
         />
 
         <ConfirmDeleteGroupModal
