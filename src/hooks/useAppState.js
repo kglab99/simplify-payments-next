@@ -88,6 +88,17 @@ export function useAppState() {
     });
   };
 
+  const deleteExpense = (groupId, expenseName) => {
+    setExpenses((prevExpenses) => {
+      const updatedExpenses = prevExpenses[groupId].filter(expense => expense.expenseName !== expenseName);
+      return {
+        ...prevExpenses,
+        [groupId]: updatedExpenses
+      };
+    });
+  };
+
+
   const deleteGroup = (groupId) => {
     setGroups((prevGroups) => prevGroups.filter((group) => group.id !== groupId));
     setExpenses((prevExpenses) => {
@@ -112,6 +123,7 @@ export function useAppState() {
     addGroup,
     addExpense,
     deleteGroup,
+    deleteExpense,
     selectedCurrency,
     updateCurrency,
   };

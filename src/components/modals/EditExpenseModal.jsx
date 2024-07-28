@@ -14,16 +14,17 @@ import { v4 as uuidv4 } from "uuid";
 const EditExpenseModal = ({
   isEditingExpenseOpen,
   setIsEditingExpense,
-  groupId,
-  updatedGroupName,
-  setUpdatedGroupName,
-  updatedUsers,
-  setUpdatedUsers,
-  newUserName,
-  setNewUserName,
-  handleAddNewUser,
-  handleSaveGroupChanges,
-  onDeleteOpen,
+//   groupId,
+//   updatedGroupName,
+//   setUpdatedGroupName,
+//   updatedUsers,
+//   setUpdatedUsers,
+//   newUserName,
+//   setNewUserName,
+//   handleAddNewUser,
+//   handleSaveGroupChanges,
+  onDeleteExpenseOpenChange,
+  onDeleteExpenseOpen
 }) => {
   return (
     <Modal
@@ -35,6 +36,19 @@ const EditExpenseModal = ({
       <ModalContent className="m-0 rounded-t-lg">
         <ModalHeader>Edit Expense</ModalHeader>
         <ModalBody>
+          <div className="flex space-x-2">
+            <Button
+              variant="flat"
+              size="md"
+              radius="sm"
+              fullWidth
+              className="text-red-500"
+              onPress={onDeleteExpenseOpen}
+            >
+              Delete Expense
+            </Button>
+          </div>
+
           {/* <Input
             size="sm"
             variant="bordered"

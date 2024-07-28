@@ -24,7 +24,8 @@ import { v4 as uuidv4 } from "uuid";
 import AddExpenseModal from "./modals/AddExpenseModal";
 import EditGroupModal from "./modals/EditGroupModal";
 import ConfirmDeleteGroupModal from "./modals/ConfirmDeleteGroupModal";
-import EditExpenseModal from './modals/EditExpenseModal'
+import EditExpenseModal from "./modals/EditExpenseModal";
+import ConfirmDeleteExpenseModal from "./modals/ConfirmDeleteExpenseModal";
 
 const Group = ({
   groups,
@@ -44,7 +45,11 @@ const Group = ({
     onOpenChange: onDeleteOpenChange,
   } = useDisclosure();
   const navigate = useNavigate();
-
+  const {
+    isOpen: isDeleteExpenseOpen,
+    onOpen: onDeleteExpenseOpen,
+    onOpenChange: onDeleteExpenseOpenChange,
+  } = useDisclosure();
   // State variables
   const [amount, setAmount] = useState("");
   const [name, setName] = useState("");
@@ -55,7 +60,6 @@ const Group = ({
   const [updatedUsers, setUpdatedUsers] = useState(group.users);
   const [newUserName, setNewUserName] = useState("");
   const [isEditingExpenseOpen, setIsEditingExpense] = useState(false);
-
 
   // Retrieve expenses and transactions
   const groupExpenses = expenses[groupId] || [];
@@ -162,8 +166,7 @@ const Group = ({
                               size="md"
                               radius="sm"
                               startContent={<EditIcon />}
-                            >
-                            </Button>
+                            ></Button>
                           </div>
                         </div>
                       </AccordionItem>
@@ -239,15 +242,22 @@ const Group = ({
           handleAddExpense={handleAddExpense}
         />
 
-        <EditExpenseModal 
-        isEditingExpenseOpen={isEditingExpenseOpen}
-        setIsEditingExpense={setIsEditingExpense}
+        <EditExpenseModal
+          isEditingExpenseOpen={isEditingExpenseOpen}
+          setIsEditingExpense={setIsEditingExpense}
+          onDeleteExpenseOpen={onDeleteExpenseOpen}
         />
 
         <ConfirmDeleteGroupModal
           isDeleteOpen={isDeleteOpen}
           onDeleteOpenChange={onDeleteOpenChange}
           handleDeleteGroup={handleDeleteGroup}
+        />
+
+        <ConfirmDeleteExpenseModal
+          isDeleteExpenseOpen={isDeleteExpenseOpen}
+          onDeleteExpenseOpenChange={onDeleteExpenseOpenChange}
+          handleDeleteExpense={handleDeleteGroup}
         />
 
         <EditGroupModal
