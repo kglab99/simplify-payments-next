@@ -36,26 +36,33 @@ const EditGroupModal = ({
         <ModalHeader>Edit Group</ModalHeader>
         <ModalBody>
           <Input
+            size="sm"
             variant="bordered"
             label="Group Name"
             value={updatedGroupName}
             onChange={(e) => setUpdatedGroupName(e.target.value)}
           />
           <div>
-            {Object.entries(updatedUsers).map(([id, userName]) => (
-              <div key={id} className="flex items-center mb-2">
-                <Input
-                  value={userName}
-                  onChange={(e) => {
-                    const newUsers = {
-                      ...updatedUsers,
-                      [id]: e.target.value,
-                    };
-                    setUpdatedUsers(newUsers);
-                  }}
-                />
-              </div>
-            ))}
+            <div className="flex flex-col gap-3">
+              {Object.entries(updatedUsers).map(([id, userName]) => (
+                <div key={id} className="flex items-center">
+                  <Input
+                    variant="flat"
+                    radius="sm"
+                    value={userName}
+                    label={`Member`}
+                    className="content-stretch	select-input"
+                    onChange={(e) => {
+                      const newUsers = {
+                        ...updatedUsers,
+                        [id]: e.target.value,
+                      };
+                      setUpdatedUsers(newUsers);
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
           <div className="flex items-center space-x-2">
             <Input

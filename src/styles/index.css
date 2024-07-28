@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 .select-input {
-  height: 2.5rem;
-  min-height: 2.5rem;
+  height: 3rem;
+  min-height: 3rem;
+
+  div.main-wrapper {
+    min-height: 100%;
+  }
 }
 
 .custom-accordion-item > h2 > button {
