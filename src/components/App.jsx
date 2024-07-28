@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { useAppState } from "./useAppState";
+import { useAppState } from "../hooks/useAppState";
 import Loading from "./Loading";
 import AppRoutes from "./Routes";
 

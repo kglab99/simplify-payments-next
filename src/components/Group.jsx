@@ -21,9 +21,9 @@ import {
   Edit as EditIcon,
 } from "@mui/icons-material";
 import { v4 as uuidv4 } from "uuid";
-import AddExpenseModal from "./AddExpenseModal";
-import EditGroupModal from "./EditGroupModal";
-import ConfirmDeleteGroupModal from "./ConfirmDeleteGroupModal";
+import AddExpenseModal from "./modals/AddExpenseModal";
+import EditGroupModal from "./modals/EditGroupModal";
+import ConfirmDeleteGroupModal from "./modals/ConfirmDeleteGroupModal";
 
 const Group = ({
   groups,

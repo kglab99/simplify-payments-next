@@ -6,7 +6,7 @@ import {
   calculateDebts,
   calculateCanceledReverseDebts,
   generateFinalTransactions,
-} from "./utils";
+} from "../utils/utils";
 
 export function useAppState() {
   const [groups, setGroups] = useLocalStorage("groups", []);
