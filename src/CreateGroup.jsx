@@ -1,19 +1,16 @@
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
+  Breadcrumbs,
+  BreadcrumbItem,
+  Input,
+  Button,
+  Listbox,
+  ListboxItem,
 } from "@nextui-org/react";
-import { Input } from "@nextui-org/react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
-
-import { Button, ButtonGroup } from "@nextui-org/button";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Link } from "react-router-dom";
-import { Listbox, ListboxSection, ListboxItem } from "@nextui-org/listbox";
 
 export default function CreateGroup({ addGroup }) {
   const [groupName, setGroupName] = useState("");

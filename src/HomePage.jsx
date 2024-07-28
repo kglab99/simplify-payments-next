@@ -7,16 +7,34 @@ import {
   ListboxItem,
   Select,
   SelectItem,
+  Tabs,
+  Tab,
+  Accordion,
+  AccordionItem
 } from "@nextui-org/react";
 import { Button } from "@nextui-org/button";
 import AddIcon from "@mui/icons-material/Add";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Link, useNavigate } from "react-router-dom";
-import { Tabs, Tab } from "@nextui-org/tabs";
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
 import { useState } from "react";
 
 const availableCurrencies = ["USD", "EUR", "GBP"];
+
+const GroupList = ({ groups, navigate }) => (
+  <Listbox>
+    {groups.map((group) => (
+      <ListboxItem key={group.id} showDivider>
+        <Accordion>
+          <AccordionItem
+            className="custom-accordion-item"
+            title={group.groupName}
+            subtitle={Object.values(group.users).join(", ")}
+            onPress={() => navigate(`/group/${group.id}`)}
+          />
+        </Accordion>
+      </ListboxItem>
+    ))}
+  </Listbox>
+);
 
 export default function HomePage({ groups, selectedCurrency, updateCurrency }) {
   const navigate = useNavigate();
@@ -28,69 +46,46 @@ export default function HomePage({ groups, selectedCurrency, updateCurrency }) {
   };
 
   return (
-    <div className="flex flex-col">
-      <Navbar maxWidth="full" isBordered isBlurred>
+    <div className="flex flex-col min-h-screen">
+      <Navbar maxWidth="full" isBordered>
         <NavbarBrand>
           <p className="font-bold text-inherit">Simplify Payments</p>
         </NavbarBrand>
       </Navbar>
 
-      <div className="flex flex-col gap-4 px-6 py-4">
+      <div className="flex flex-col gap-4 px-6 py-4 flex-grow">
         <Breadcrumbs>
           <BreadcrumbItem>Groups</BreadcrumbItem>
         </Breadcrumbs>
 
-        <div className="flex flex-col">
-          <Tabs aria-label="Options" variant="solid" radius="sm" fullWidth>
-            <Tab title="Groups">
-              {groups.length > 0 ? (
-                <Listbox>
-                  {groups.map((group) => (
-                    <ListboxItem
-                      key={group.id}
-                      showDivider
-                      // endContent={<ChevronRightIcon />}
-                    >
-                      <Accordion>
-                        <AccordionItem
-                          className="custom-accordion-item"
-                          title={group.groupName}
-                          subtitle={Object.values(group.users).join(", ")}
-                          // hideIndicator
-                          // disableAnimation
-                          onPress={() => navigate(`/group/${group.id}`)}
-                        ></AccordionItem>
-                      </Accordion>
-                    </ListboxItem>
-                  ))}
-                </Listbox>
-              ) : (
-                <div className="py-4">
-                  <p>No groups found. Create a new group to get started!</p>
-                </div>
-              )}
-            </Tab>
+        <Tabs aria-label="Options" variant="solid" radius="sm" fullWidth>
+          <Tab title="Groups">
+            {groups.length > 0 ? (
+              <GroupList groups={groups} navigate={navigate} />
+            ) : (
+              <div className="py-4">
+                <p>No groups found. Create a new group to get started!</p>
+              </div>
+            )}
+          </Tab>
 
-            <Tab title="Settings">
-                <Select
-                  placeholder={selectedCurrency}
-                  selectedKeys={currency}
-                  onSelectionChange={(selected) =>
-                    handleCurrencyChange(selected.currentKey)
-                  }
-                >
-                  {availableCurrencies.map((currency) => (
-                    <SelectItem key={currency} value={currency}>
-                      {currency}
-                    </SelectItem>
-                  ))}
-                </Select>
-            </Tab>
-          </Tabs>
-        </div>
+          <Tab title="Settings">
+            <Select
+              placeholder={selectedCurrency}
+              selectedKeys={currency}
+              onSelectionChange={(selected) => handleCurrencyChange(selected.currentKey)}
+            >
+              {availableCurrencies.map((currency) => (
+                <SelectItem key={currency} value={currency}>
+                  {currency}
+                </SelectItem>
+              ))}
+            </Select>
+          </Tab>
+        </Tabs>
       </div>
 
-      <Link className="self-center" to="/create-group">
+      <Link className="self-center mt-4 mb-4" to="/create-group">
         <Button
           variant="flat"
           size="md"

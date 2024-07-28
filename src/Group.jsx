@@ -1,28 +1,29 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Navbar, NavbarBrand } from "@nextui-org/react";
-import { Input } from "@nextui-org/react";
-import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
-import { Button } from "@nextui-org/button";
-import AddIcon from "@mui/icons-material/Add";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { Link } from "react-router-dom";
-import { Listbox, ListboxItem } from "@nextui-org/listbox";
-import { Tabs, Tab } from "@nextui-org/tabs";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
+  Navbar,
+  Breadcrumbs,
+  BreadcrumbItem,
+  Input,
+  Button,
+  Listbox,
+  ListboxItem,
+  Tabs,
+  Tab,
   useDisclosure,
+  Accordion,
+  AccordionItem,
+  NavbarBrand,
 } from "@nextui-org/react";
-import { CheckboxGroup, Checkbox } from "@nextui-org/checkbox";
-import { Select, SelectItem } from "@nextui-org/react";
-import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import {
+  Add as AddIcon,
+  ArrowBackIosNew as ArrowBackIosNewIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material";
 import { v4 as uuidv4 } from "uuid";
-import EditIcon from "@mui/icons-material/Edit";
-import { useNavigate } from "react-router-dom";
+import AddExpenseModal from "./AddExpenseModal";
+import EditGroupModal from "./EditGroupModal";
+import ConfirmDeleteGroupModal from "./ConfirmDeleteGroupModal";
 
 const Group = ({
   groups,
@@ -34,7 +35,6 @@ const Group = ({
   selectedCurrency,
 }) => {
   const { groupId } = useParams();
-  const numericGroupId = parseInt(groupId, 10); // Ensure numeric ID
   const group = groups.find((group) => group.id === groupId);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
@@ -65,13 +65,6 @@ const Group = ({
     ([, nameA], [, nameB]) => nameA.localeCompare(nameB)
   );
 
-  useEffect(() => {
-    if (isOpen) {
-      // Select all users when the modal opens
-      setParticipants(Object.keys(group.users));
-    }
-  }, [isOpen, group.users]);
-
   if (!group) {
     return <p>Group not found</p>;
   }
@@ -83,7 +76,7 @@ const Group = ({
       setAmount("");
       setPayer("");
       setParticipants([]);
-      onOpenChange(); // Close modal after adding expense
+      onOpenChange();
     }
   };
 
@@ -104,7 +97,7 @@ const Group = ({
 
   const handleDeleteGroup = () => {
     deleteGroup(groupId);
-    onDeleteOpenChange(); // Close the confirm delete modal
+    onDeleteOpenChange();
     navigate("/");
   };
 
@@ -211,196 +204,41 @@ const Group = ({
             </Tab>
           </Tabs>
         </div>
-        <Modal
-          backdrop="opaque"
-          radius="none"
+        <AddExpenseModal
           isOpen={isOpen}
           onOpenChange={onOpenChange}
-          placement="bottom-center"
-        >
-          <ModalContent className='m-0 rounded-t-lg'>
-            <ModalHeader>Add expense</ModalHeader>
-            <ModalBody>
-              <Input
-                variant="flat"
-                size="sm"
-                label="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <Input
-                variant="flat"
-                size="sm"
-                type="number"
-                label="Amount"
-                value={amount}
-                onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-              />
-              <Select
-                size="md"
-                variant="flat"
-                radius="sm"
-                className="h-12 min-h-12 select-input"
-                value={payer}
-                onChange={(event) => setPayer(event.target.value)}
-                aria-label="Payer"
-                placeholder="Select payer"
-              >
-                {Object.entries(group.users).map(([id, name]) => (
-                  <SelectItem key={id} value={id}>
-                    {name}
-                  </SelectItem>
-                ))}
-              </Select>
-              <CheckboxGroup
-                label="Participants"
-                className="my-4"
-                value={participants}
-                onChange={(checkedValues) => setParticipants(checkedValues)}
-              >
-                {Object.entries(group.users).map(([id, name]) => (
-                  <Checkbox key={id} value={id} sx={{ minWidth: "100px" }}>
-                    {name}
-                  </Checkbox>
-                ))}
-              </CheckboxGroup>
+          name={name}
+          setName={setName}
+          amount={amount}
+          setAmount={setAmount}
+          payer={payer}
+          setPayer={setPayer}
+          participants={participants}
+          setParticipants={setParticipants}
+          group={group}
+          handleAddExpense={handleAddExpense}
+        />
 
-              <Button
-                onClick={handleAddExpense}
-                variant="flat"
-                size="md"
-                radius="sm"
-                startContent={<AddIcon />}
-              >
-                Add Expense
-              </Button>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-        <Modal
-          isOpen={isDeleteOpen}
-          onClose={onDeleteOpenChange}
-          scrollBehavior="inside"
-          radius="none"
+        <ConfirmDeleteGroupModal
+          isDeleteOpen={isDeleteOpen}
+          onDeleteOpenChange={onDeleteOpenChange}
+          handleDeleteGroup={handleDeleteGroup}
+        />
 
-        >
-          <ModalContent className="m-0 rounded-t-lg">
-          <ModalHeader>Confirm Delete Group</ModalHeader>
-            <ModalBody>
-              <p>
-                Are you sure you want to delete this group? This action cannot
-                be undone.
-              </p>
-            </ModalBody>
-            <ModalFooter>
-              <div className="justify-items-stretch	">
-                <Button
-                  variant="flat"
-                  size="md"
-                  radius="sm"
-                  className="text-black"
-                  onPress={onDeleteOpenChange}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="flat"
-                  size="md"
-                  radius="sm"
-                  className="text-red-500"
-                  onPress={handleDeleteGroup}
-                >
-                  Confirm Delete
-                </Button>
-              </div>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-
-        <Modal
-          isOpen={isEditingGroup}
-          onClose={() => setIsEditingGroup(false)}
-          scrollBehavior="inside"
-          radius="none"
-
-        >
-          <ModalContent className="m-0 rounded-t-lg">
-          <ModalHeader>Edit Group</ModalHeader>
-            <ModalBody>
-              <Input
-                variant="bordered"
-                label="Group Name"
-                value={updatedGroupName}
-                onChange={(e) => setUpdatedGroupName(e.target.value)}
-              />
-              <div>
-                {Object.entries(updatedUsers).map(([id, userName]) => (
-                  <div key={id} className="flex items-center mb-2">
-                    <Input
-                      value={userName}
-                      onChange={(e) => {
-                        const newUsers = {
-                          ...updatedUsers,
-                          [id]: e.target.value,
-                        };
-                        setUpdatedUsers(newUsers);
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center space-x-2">
-                <Input
-                  variant="flat"
-                  size="sm"
-                  label="New Member Name"
-                  value={newUserName}
-                  onChange={(e) => setNewUserName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleAddNewUser();
-                    }
-                  }}
-                />
-                <Button
-                  isIconOnly
-                  variant="flat"
-                  size="lg"
-                  radius="sm"
-                  className="text-black"
-                  onClick={handleAddNewUser}
-                >
-                  <AddIcon />
-                </Button>
-              </div>
-              <div className="flex space-x-2">
-                <Button
-                  variant="flat"
-                  size="md"
-                  radius="sm"
-                  fullWidth
-                  className="text-red-500"
-                  onPress={onDeleteOpen}
-                >
-                  Delete Group
-                </Button>
-              </div>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                onPress={handleSaveGroupChanges}
-                variant="flat"
-                size="md"
-                fullWidth
-                radius="sm"
-                startContent={<AddIcon />}
-                className="text-black"
-              >
-                Save Changes
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        <EditGroupModal
+          isEditingGroup={isEditingGroup}
+          setIsEditingGroup={setIsEditingGroup}
+          groupId={groupId}
+          updatedGroupName={updatedGroupName}
+          setUpdatedGroupName={setUpdatedGroupName}
+          updatedUsers={updatedUsers}
+          setUpdatedUsers={setUpdatedUsers}
+          newUserName={newUserName}
+          setNewUserName={setNewUserName}
+          handleAddNewUser={handleAddNewUser}
+          handleSaveGroupChanges={handleSaveGroupChanges}
+          onDeleteOpen={onDeleteOpen}
+        />
 
         <Button
           onPress={onOpen}
