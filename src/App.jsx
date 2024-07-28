@@ -17,12 +17,24 @@ export default function App() {
     updateExpense,
     finalTransactions,
     deleteGroup,
+    selectedCurrency,
+    updateCurrency,
   } = useAppState();
 
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
-        <Route exact path="/" element={<HomePage groups={groups} />} />
+        <Route
+          exact
+          path="/"
+          element={
+            <HomePage
+              groups={groups}
+              selectedCurrency={selectedCurrency}
+              updateCurrency={updateCurrency}
+            />
+          }
+        />
         <Route
           path="/create-group"
           element={<CreateGroup addGroup={addGroup} />}
@@ -39,6 +51,7 @@ export default function App() {
               updateGroup={updateGroup}
               updateExpense={updateExpense}
               deleteGroup={deleteGroup}
+              selectedCurrency={selectedCurrency}
             />
           }
         />

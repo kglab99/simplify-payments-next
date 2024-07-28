@@ -29,7 +29,7 @@ export default function CreateGroup({ addGroup }) {
   };
 
   const handleCreateGroup = () => {
-    if (groupName != "") {
+    if (groupName.trim() !== "" && users.length >= 2) {
       addGroup(groupName, users);
       setGroupName("");
       setUsers([]);
@@ -37,11 +37,13 @@ export default function CreateGroup({ addGroup }) {
     }
   };
 
+  const isCreateButtonDisabled = groupName.trim() === "" || users.length < 2;
+
   return (
     <div className="flex flex-col ">
       <Navbar isBordered={true} isBlurred={true} className="pl-0">
         <Link to="/">
-          <Button isIconOnly variant="light" aria-label="Like">
+          <Button isIconOnly variant="light" aria-label="Back">
             <ArrowBackIosNewIcon />
           </Button>
         </Link>
@@ -73,7 +75,6 @@ export default function CreateGroup({ addGroup }) {
             variant="flat"
             size="lg"
             radius="sm"
-            // color="primary"
             className="text-black"
             onClick={handleAddUser}
           >
@@ -88,18 +89,24 @@ export default function CreateGroup({ addGroup }) {
             ))}
           </Listbox>
         )}
+
+        {isCreateButtonDisabled && (
+          <p className="text-zinc-500 text-sm px-2">
+            Add a group name and a minimum of two users.
+          </p>
+        )}
       </div>
-        <Button
-          variant="flat"
-          size="md"
-          //   color="primary"
-          radius="sm"
-          startContent={<AddIcon />}
-          className="text-black"
-          onClick={handleCreateGroup}
-        >
-          Create group
-        </Button>
+      <Button
+        variant="flat"
+        size="md"
+        radius="sm"
+        startContent={<AddIcon />}
+        className="text-black self-center"
+        onClick={handleCreateGroup}
+        isDisabled={isCreateButtonDisabled}
+      >
+        Create group
+      </Button>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Navbar, NavbarBrand, NavbarContent } from "@nextui-org/react";
+import { Navbar, NavbarBrand } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import { Button } from "@nextui-org/button";
@@ -31,6 +31,7 @@ const Group = ({
   updateGroup,
   deleteGroup,
   finalTransactions,
+  selectedCurrency,
 }) => {
   const { groupId } = useParams();
   const numericGroupId = parseInt(groupId, 10); // Ensure numeric ID
@@ -104,7 +105,7 @@ const Group = ({
   const handleDeleteGroup = () => {
     deleteGroup(groupId);
     onDeleteOpenChange(); // Close the confirm delete modal
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -116,7 +117,7 @@ const Group = ({
         className="pl-0"
       >
         <Link to="/">
-          <Button isIconOnly variant="light" aria-label="Like">
+          <Button isIconOnly variant="light" aria-label="Back">
             <ArrowBackIosNewIcon />
           </Button>
         </Link>
@@ -127,7 +128,9 @@ const Group = ({
 
       <div className="flex flex-col gap-4 px-6 py-4">
         <Breadcrumbs>
-          <BreadcrumbItem href="/">Groups</BreadcrumbItem>
+          <BreadcrumbItem>
+            <Link to="/">Groups</Link>
+          </BreadcrumbItem>
           <BreadcrumbItem>{group.groupName}</BreadcrumbItem>
         </Breadcrumbs>
         <div className="flex flex-col">
@@ -140,13 +143,14 @@ const Group = ({
                       <AccordionItem
                         className="custom-accordion-item"
                         title={expense.expenseName}
-                        subtitle={`$${expense.amount} paid by ${
-                          group.users[expense.creditor]
-                        }`}
+                        subtitle={`${selectedCurrency}${
+                          expense.amount
+                        } paid by ${group.users[expense.creditor]}`}
                       >
                         {Object.entries(expense.debtors).map(([id, share]) => (
                           <p key={id}>
-                            {group.users[id]} owes ${share.toFixed(2)}
+                            {group.users[id]} owes {selectedCurrency}
+                            {share.toFixed(2)}
                           </p>
                         ))}
                       </AccordionItem>
@@ -162,7 +166,7 @@ const Group = ({
                   <ListboxItem showDivider key={index}>
                     <p>
                       {group.users[transaction.from]} owes{" "}
-                      {group.users[transaction.to]} $
+                      {group.users[transaction.to]} {selectedCurrency}
                       {transaction.amount.toFixed(2)}
                     </p>
                   </ListboxItem>
@@ -199,7 +203,6 @@ const Group = ({
                     size="md"
                     radius="sm"
                     startContent={<EditIcon />}
-                    className="text-black"
                   >
                     Edit
                   </Button>
@@ -237,11 +240,11 @@ const Group = ({
                 size="md"
                 variant="flat"
                 radius="sm"
+                className="h-12 min-h-12 select-input"
                 value={payer}
                 onChange={(event) => setPayer(event.target.value)}
                 aria-label="Payer"
                 placeholder="Select payer"
-                className="h-12 min-h-12 select-input"
               >
                 {Object.entries(group.users).map(([id, name]) => (
                   <SelectItem key={id} value={id}>
@@ -268,23 +271,61 @@ const Group = ({
                 size="md"
                 radius="sm"
                 startContent={<AddIcon />}
-                className="text-black"
               >
-                Add expense
+                Add Expense
               </Button>
             </ModalBody>
-            <ModalFooter></ModalFooter>
+          </ModalContent>
+        </Modal>
+        <Modal
+          isOpen={isDeleteOpen}
+          onClose={onDeleteOpenChange}
+          scrollBehavior="inside"
+          radius="none"
+
+        >
+          <ModalContent className="m-0 rounded-t-lg">
+          <ModalHeader>Confirm Delete Group</ModalHeader>
+            <ModalBody>
+              <p>
+                Are you sure you want to delete this group? This action cannot
+                be undone.
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <div className="justify-items-stretch	">
+                <Button
+                  variant="flat"
+                  size="md"
+                  radius="sm"
+                  className="text-black"
+                  onPress={onDeleteOpenChange}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="flat"
+                  size="md"
+                  radius="sm"
+                  className="text-red-500"
+                  onPress={handleDeleteGroup}
+                >
+                  Confirm Delete
+                </Button>
+              </div>
+            </ModalFooter>
           </ModalContent>
         </Modal>
 
         <Modal
           isOpen={isEditingGroup}
           onClose={() => setIsEditingGroup(false)}
-          backdrop="blur"
           scrollBehavior="inside"
+          radius="none"
+
         >
-          <ModalContent>
-            <ModalHeader>Edit Group</ModalHeader>
+          <ModalContent className="m-0 rounded-t-lg">
+          <ModalHeader>Edit Group</ModalHeader>
             <ModalBody>
               <Input
                 variant="bordered"
@@ -333,21 +374,19 @@ const Group = ({
                 </Button>
               </div>
               <div className="flex space-x-2">
-              <Button
-                variant="flat"
-                size="md"
-                radius="sm"
-                fullWidth
-                className="text-red-500"
-                onPress={onDeleteOpen}
-              >
-                Delete Group
-              </Button>
-            </div>
-
+                <Button
+                  variant="flat"
+                  size="md"
+                  radius="sm"
+                  fullWidth
+                  className="text-red-500"
+                  onPress={onDeleteOpen}
+                >
+                  Delete Group
+                </Button>
+              </div>
             </ModalBody>
             <ModalFooter>
-                
               <Button
                 onPress={handleSaveGroupChanges}
                 variant="flat"
@@ -363,50 +402,12 @@ const Group = ({
           </ModalContent>
         </Modal>
 
-        <Modal
-          isOpen={isDeleteOpen}
-          onClose={onDeleteOpenChange}
-          backdrop="blur"
-          scrollBehavior="inside"
-        >
-          <ModalContent>
-            <ModalHeader>Confirm Delete Group</ModalHeader>
-            <ModalBody>
-              <p>
-                Are you sure you want to delete this group? This action cannot
-                be undone.
-              </p>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                variant="flat"
-                size="md"
-                radius="sm"
-                className="text-black"
-                onPress={onDeleteOpenChange}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="flat"
-                size="md"
-                radius="sm"
-                className="text-red-500"
-                onPress={handleDeleteGroup}
-              >
-                Confirm Delete
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-
         <Button
           onPress={onOpen}
           variant="flat"
           size="md"
           radius="sm"
           startContent={<AddIcon />}
-          className="text-black"
         >
           Add expense
         </Button>

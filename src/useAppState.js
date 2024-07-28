@@ -109,6 +109,11 @@ export function useAppState() {
       : {};
   });
 
+  const [selectedCurrency, setSelectedCurrency] = useState(() => {
+    const storedCurrency = localStorage.getItem("selectedCurrency");
+    return storedCurrency ? (storedCurrency) : "USD"
+  });
+
   const [finalTransactions, setFinalTransactions] = useState(() => {
     const storedFinalTransactions = localStorage.getItem("finalTransactions");
     return storedFinalTransactions ? JSON.parse(storedFinalTransactions) : {};
@@ -134,13 +139,15 @@ export function useAppState() {
         JSON.stringify(canceledReversedDebts)
       );
 
+      localStorage.setItem("selectedCurrency", selectedCurrency);
+
       const transactions = generateFinalTransactions(canceledReversedDebts);
       setFinalTransactions(transactions);
       localStorage.setItem("finalTransactions", JSON.stringify(transactions));
     };
 
     saveData();
-  }, [groups, expenses]);
+  }, [groups, expenses, selectedCurrency]);
 
   const addGroup = (groupName, users) => {
     const usersWithIds = users.reduce((acc, user) => {
@@ -230,6 +237,10 @@ export function useAppState() {
     logFinalTransactionsWithNames();
   }, [finalTransactions]);
 
+  const updateCurrency = (currency) => {
+    setSelectedCurrency(currency);
+  };
+
   return {
     groups,
     expenses,
@@ -241,8 +252,10 @@ export function useAppState() {
     updateExpense,
     addGroup,
     addExpense,
-    deleteGroup, // Export deleteGroup function
-    logFinalTransactionsWithNames, // Export function if needed
+    deleteGroup,
+    logFinalTransactionsWithNames,
+    selectedCurrency,
+    updateCurrency,
   };
 }
 

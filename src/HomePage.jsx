@@ -3,17 +3,29 @@ import {
   NavbarBrand,
   Breadcrumbs,
   BreadcrumbItem,
+  Listbox,
+  ListboxItem,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import { Button } from "@nextui-org/button";
-import { Listbox, ListboxItem } from "@nextui-org/listbox";
 import AddIcon from "@mui/icons-material/Add";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Link, useNavigate } from "react-router-dom";
 import { Tabs, Tab } from "@nextui-org/tabs";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import { useState } from "react";
 
-export default function HomePage({ groups }) {
+const availableCurrencies = ["USD", "EUR", "GBP"];
+
+export default function HomePage({ groups, selectedCurrency, updateCurrency }) {
   const navigate = useNavigate();
+  const [currency, setCurrency] = useState(selectedCurrency);
+
+  const handleCurrencyChange = (newCurrency) => {
+    setCurrency(newCurrency);
+    updateCurrency(newCurrency);
+  };
 
   return (
     <div className="flex flex-col">
@@ -47,9 +59,7 @@ export default function HomePage({ groups }) {
                           // hideIndicator
                           // disableAnimation
                           onPress={() => navigate(`/group/${group.id}`)}
-                        >
-                       
-                        </AccordionItem>
+                        ></AccordionItem>
                       </Accordion>
                     </ListboxItem>
                   ))}
@@ -61,7 +71,21 @@ export default function HomePage({ groups }) {
               )}
             </Tab>
 
-            <Tab title="Settings"></Tab>
+            <Tab title="Settings">
+                <Select
+                  placeholder={selectedCurrency}
+                  selectedKeys={currency}
+                  onSelectionChange={(selected) =>
+                    handleCurrencyChange(selected.currentKey)
+                  }
+                >
+                  {availableCurrencies.map((currency) => (
+                    <SelectItem key={currency} value={currency}>
+                      {currency}
+                    </SelectItem>
+                  ))}
+                </Select>
+            </Tab>
           </Tabs>
         </div>
       </div>
