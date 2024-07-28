@@ -218,7 +218,7 @@ const Group = ({
           onOpenChange={onOpenChange}
           placement="bottom-center"
         >
-          <ModalContent className="m-0 rounded-t-lg">
+          <ModalContent className='m-0 rounded-t-lg'>
             <ModalHeader>Add expense</ModalHeader>
             <ModalBody>
               <Input

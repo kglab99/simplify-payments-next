@@ -1,11 +1,11 @@
-import React, { Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Suspense } from "react";
 import { useAppState } from "./useAppState";
 import Loading from "./Loading";
-const HomePage = React.lazy(() => import("./HomePage"));
-const CreateGroup = React.lazy(() => import("./CreateGroup"));
-const Group = React.lazy(() => import("./Group"));
+import AppRoutes from "./Routes";
 
+/*
+ * Main App component that sets up the Suspense boundary and provides state to the AppRoutes component.
+ */
 export default function App() {
   const {
     groups,
@@ -23,39 +23,19 @@ export default function App() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <Routes>
-        <Route
-          exact
-          path="/"
-          element={
-            <HomePage
-              groups={groups}
-              selectedCurrency={selectedCurrency}
-              updateCurrency={updateCurrency}
-            />
-          }
-        />
-        <Route
-          path="/create-group"
-          element={<CreateGroup addGroup={addGroup} />}
-        />
-        <Route
-          path="/group/:groupId"
-          element={
-            <Group
-              groups={groups}
-              addExpense={addExpense}
-              expenses={expenses}
-              debts={debts}
-              finalTransactions={finalTransactions}
-              updateGroup={updateGroup}
-              updateExpense={updateExpense}
-              deleteGroup={deleteGroup}
-              selectedCurrency={selectedCurrency}
-            />
-          }
-        />
-      </Routes>
+      <AppRoutes
+        groups={groups}
+        expenses={expenses}
+        debts={debts}
+        addGroup={addGroup}
+        addExpense={addExpense}
+        updateGroup={updateGroup}
+        updateExpense={updateExpense}
+        finalTransactions={finalTransactions}
+        deleteGroup={deleteGroup}
+        selectedCurrency={selectedCurrency}
+        updateCurrency={updateCurrency}
+      />
     </Suspense>
   );
 }

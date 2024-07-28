@@ -96,7 +96,6 @@ export default function HomePage({ groups, selectedCurrency, updateCurrency }) {
           size="md"
           radius="sm"
           startContent={<AddIcon />}
-          className="text-black"
           aria-label="Create new group"
         >
           Create new group
