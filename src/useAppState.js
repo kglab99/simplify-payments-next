@@ -111,7 +111,7 @@ export function useAppState() {
 
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     const storedCurrency = localStorage.getItem("selectedCurrency");
-    return storedCurrency ? (storedCurrency) : "USD"
+    return storedCurrency ? (storedCurrency) : "USD" // Default currency
   });
 
   const [finalTransactions, setFinalTransactions] = useState(() => {
