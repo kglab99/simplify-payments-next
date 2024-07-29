@@ -17,7 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-const availableCurrencies = ["USD", "EUR", "GBP"];
+const availableCurrencies = ["$", "£"];
 
 const GroupList = ({ groups, navigate }) => (
   <Listbox>
