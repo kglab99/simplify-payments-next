@@ -132,7 +132,7 @@ const Group = ({
   };
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <Navbar
         maxWidth="full"
         isBordered={true}
@@ -157,7 +157,13 @@ const Group = ({
           <BreadcrumbItem>{group.groupName}</BreadcrumbItem>
         </Breadcrumbs>
         <div className="flex flex-col">
-          <Tabs aria-label="Options" variant="solid" radius="sm" fullWidth>
+          <Tabs
+            aria-label="Options"
+            variant="solid"
+            radius="sm"
+            size="sm"
+            fullWidth
+          >
             <Tab title="Expenses">
               <Listbox>
                 {groupExpenses.map((expense, index) => (
@@ -251,6 +257,7 @@ const Group = ({
                 </div>
               </div>
             </Tab>
+            <Tab title="Stats"></Tab>
           </Tabs>
         </div>
         <AddExpenseModal
@@ -313,6 +320,7 @@ const Group = ({
           variant="flat"
           size="md"
           radius="sm"
+          className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50"
           startContent={<AddIcon />}
         >
           Add expense
