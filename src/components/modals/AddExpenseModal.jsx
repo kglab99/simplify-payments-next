@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Modal,
   ModalContent,
@@ -27,12 +27,31 @@ const AddExpenseModal = ({
   group,
   handleAddExpense,
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const buttonRef = useRef(null);
+
   useEffect(() => {
     if (isOpen) {
-      // Select all users when the modal opens
       setParticipants(Object.keys(group.users));
     }
   }, [isOpen, group.users, setParticipants]);
+
+  const handleButtonClick = () => {
+    if (!isSubmitting) {
+      setIsSubmitting(true);
+      handleAddExpense();
+      setTimeout(() => setIsSubmitting(false), 300); // Debounce to avoid multiple submissions
+    }
+  };
+
+  const handleButtonKeyDown = (event) => {
+    if (event.key === "Enter" && !isSubmitting) {
+      event.preventDefault();
+      if (buttonRef.current) {
+        buttonRef.current.click(); // Trigger the click handler
+      }
+    }
+  };
 
   return (
     <Modal
@@ -42,7 +61,7 @@ const AddExpenseModal = ({
       onOpenChange={onOpenChange}
       placement="bottom-center"
     >
-      <ModalContent className="m-0 rounded-t-lg">
+      <ModalContent tabIndex={0} className="m-0 rounded-t-lg">
         <ModalHeader>Add expense</ModalHeader>
         <ModalBody>
           <Input
@@ -90,7 +109,9 @@ const AddExpenseModal = ({
           </CheckboxGroup>
 
           <Button
-            onClick={handleAddExpense}
+            ref={buttonRef}
+            onClick={handleButtonClick}
+            onKeyDown={handleButtonKeyDown}
             variant="flat"
             size="md"
             radius="sm"

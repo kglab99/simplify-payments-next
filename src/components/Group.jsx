@@ -153,7 +153,7 @@ const Group = ({
         </NavbarBrand>
       </Navbar>
 
-      <div className="flex flex-col gap-4 px-6 py-4">
+      <div className="flex flex-col gap-4 px-6 py-4 pb-16">
         <Breadcrumbs>
           <BreadcrumbItem>
             <Link to="/">Groups</Link>

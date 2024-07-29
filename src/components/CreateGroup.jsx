@@ -34,6 +34,12 @@ export default function CreateGroup({ addGroup }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleAddUser();
+    }
+  };
+
   const isCreateButtonDisabled = groupName.trim() === "" || users.length < 2;
 
   return (
@@ -66,6 +72,7 @@ export default function CreateGroup({ addGroup }) {
             label="User Name"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
+            onKeyUp={handleKeyDown}
           />
           <Button
             isIconOnly
