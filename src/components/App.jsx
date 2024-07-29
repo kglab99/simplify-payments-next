@@ -13,6 +13,7 @@ export default function App() {
     debts,
     addGroup,
     addExpense,
+    editExpense,
     updateGroup,
     finalTransactions,
     deleteGroup,
@@ -36,6 +37,7 @@ export default function App() {
         selectedCurrency={selectedCurrency}
         deleteExpense={deleteExpense}
         updateCurrency={updateCurrency}
+        editExpense={editExpense}
       />
     </Suspense>
   );

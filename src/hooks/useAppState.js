@@ -89,6 +89,37 @@ export function useAppState() {
     });
   };
 
+  const editExpense = (groupId, expenseId, updatedExpense) => {
+    setExpenses((prevExpenses) => {
+      // Debug logs
+      console.log("Previous Expenses:", prevExpenses);
+      console.log("Group ID:", groupId);
+      console.log("Expense ID:", expenseId);
+      console.log("Updated Expense:", updatedExpense);
+  
+      // Check if the group exists
+      if (!prevExpenses[groupId]) {
+        console.error(`Group with ID ${groupId} does not exist.`);
+        return prevExpenses; // No change if group does not exist
+      }
+  
+      // Update the expense within the group
+      const updatedGroupExpenses = prevExpenses[groupId].map((expense) => {
+        if (expense.id === expenseId) {
+          return { ...expense, ...updatedExpense }; // Update the expense
+        }
+        return expense; // Keep other expenses unchanged
+      });
+  
+      // Return the updated expenses object
+      return {
+        ...prevExpenses,
+        [groupId]: updatedGroupExpenses,
+      };
+    });
+  };
+  
+
   const deleteGroup = (groupId) => {
     setGroups((prevGroups) => prevGroups.filter((group) => group.id !== groupId));
     setExpenses((prevExpenses) => {
@@ -111,6 +142,7 @@ export function useAppState() {
     finalTransactions,
     addGroup,
     addExpense,
+    editExpense,
     deleteGroup,
     deleteExpense,
     selectedCurrency,

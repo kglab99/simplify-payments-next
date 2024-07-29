@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Navbar,
   Breadcrumbs,
@@ -34,6 +34,7 @@ const Group = ({
   updateGroup,
   deleteGroup,
   deleteExpense,
+  editExpense,
   finalTransactions,
   selectedCurrency,
 }) => {
@@ -61,7 +62,8 @@ const Group = ({
   const [updatedUsers, setUpdatedUsers] = useState(group.users);
   const [newUserName, setNewUserName] = useState("");
   const [isEditingExpenseOpen, setIsEditingExpense] = useState(false);
-  const [expenseToDelete, setExpenseToDelete] = useState(null);
+  const [expenseToEdit, setExpenseToEdit] = useState(null);
+  const groupUsers = group ? group.users : {};
 
   // Retrieve expenses and transactions
   const groupExpenses = expenses[groupId] || [];
@@ -69,6 +71,15 @@ const Group = ({
   const sortedTransactions = [...groupTransactions].sort(
     (a, b) => b.amount - a.amount
   );
+
+  const [expenseToEditContent, setExpenseToEditContent] = useState(null);
+
+  useEffect(() => {
+    const foundExpense = groupExpenses.find(
+      (expense) => expense.id === expenseToEdit
+    );
+    setExpenseToEditContent(foundExpense);
+  }, [expenseToEdit, groupExpenses]);
 
   const sortedGroupUsers = Object.entries(group.users).sort(
     ([, nameA], [, nameB]) => nameA.localeCompare(nameB)
@@ -95,10 +106,10 @@ const Group = ({
   };
 
   const handleDeleteExpense = () => {
-    if (expenseToDelete) {
+    if (expenseToEdit) {
       console.log(groupId);
-      deleteExpense(groupId, expenseToDelete);
-      setExpenseToDelete(null);
+      deleteExpense(groupId, expenseToEdit);
+      setExpenseToEdit(null);
       onDeleteExpenseOpenChange();
       setIsEditingExpense(false);
     }
@@ -174,8 +185,7 @@ const Group = ({
                             <Button
                               onPress={() => {
                                 setIsEditingExpense(true);
-                                setExpenseToDelete(expense.id);
-                                console.log(expenseToDelete);
+                                setExpenseToEdit(expense.id);
                               }}
                               variant="light"
                               isIconOnly
@@ -262,6 +272,13 @@ const Group = ({
           isEditingExpenseOpen={isEditingExpenseOpen}
           setIsEditingExpense={setIsEditingExpense}
           onDeleteExpenseOpen={onDeleteExpenseOpen}
+          editExpense={editExpense}
+          expenseId={expenseToEdit}
+          expenseToEdit={expenseToEditContent}
+          groupId={groupId}
+          groupExpenses={groupExpenses}
+          groupUsers={groupUsers}
+          groups={groups}
         />
 
         <ConfirmDeleteGroupModal
