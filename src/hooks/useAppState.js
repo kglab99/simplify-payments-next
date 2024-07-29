@@ -58,6 +58,7 @@ export function useAppState() {
     const share = amount / numParticipants;
 
     const newExpense = {
+      id: uuidv4(),
       expenseName,
       amount,
       creditor: payer,
@@ -75,29 +76,6 @@ export function useAppState() {
       return updatedExpenses;
     });
   };
-
-  const updateExpense = (groupId, oldExpenseName, newExpense) => {
-    setExpenses((prevExpenses) => {
-      const updatedExpenses = {
-        ...prevExpenses,
-        [groupId]: prevExpenses[groupId].map((expense) =>
-          expense.expenseName === oldExpenseName ? newExpense : expense
-        ),
-      };
-      return updatedExpenses;
-    });
-  };
-
-  const deleteExpense = (groupId, expenseName) => {
-    setExpenses((prevExpenses) => {
-      const updatedExpenses = prevExpenses[groupId].filter(expense => expense.expenseName !== expenseName);
-      return {
-        ...prevExpenses,
-        [groupId]: updatedExpenses
-      };
-    });
-  };
-
 
   const deleteGroup = (groupId) => {
     setGroups((prevGroups) => prevGroups.filter((group) => group.id !== groupId));
@@ -119,11 +97,9 @@ export function useAppState() {
     updateGroup,
     canceledReversedDebts,
     finalTransactions,
-    updateExpense,
     addGroup,
     addExpense,
     deleteGroup,
-    deleteExpense,
     selectedCurrency,
     updateCurrency,
   };
