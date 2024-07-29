@@ -9,8 +9,8 @@ import {
 } from "../utils/utils";
 
 export function useAppState() {
-  const [groups, setGroups] = useLocalStorage("groups", []);
-  const [expenses, setExpenses] = useLocalStorage("expenses", {});
+  const [groups, setGroups] = useLocalStorage("groups", [], exampleGroups);
+  const [expenses, setExpenses] = useLocalStorage("expenses", {}, exampleExpenses);
 
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     const storedCurrency = localStorage.getItem("selectedCurrency");
@@ -39,6 +39,7 @@ export function useAppState() {
     localStorage.setItem("expenses", JSON.stringify(expenses));
     localStorage.setItem("selectedCurrency", selectedCurrency);
   }, [groups, expenses, selectedCurrency]);
+
 
   const addGroup = (groupName, users) => {
     const usersWithIds = users.reduce((acc, user) => {
@@ -220,4 +221,126 @@ export function useAppState() {
     updateCurrency,
     calculateTotalGroupExpenses,
   };
+}
+
+const exampleGroups = [
+  {
+    id: "a51a7884-b885-470b-b127-a8100cf973d1",
+    groupName: "Example: Berlin",
+    users: {
+      "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": "Pawel",
+      "94ffbea7-f6e0-4b57-9a26-134d23d5025a": "Aga",
+      "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8": "John",
+      "465ba762-869d-49fb-8938-47941fbc16ba": "Lukas",
+      "51cf8cd6-09e0-48dc-95e4-f3952f7cb844": "Adam",
+      "1e4e2cef-885e-444d-83da-ed6a8bbdeadd": "Robert",
+    },
+  },
+];
+
+const exampleExpenses = {
+  "a51a7884-b885-470b-b127-a8100cf973d1": [
+      {
+          "id": "f3f13270-f85b-407e-b2d4-e151fe204460",
+          "expenseName": "Groceries",
+          "amount": 87,
+          "creditor": "94ffbea7-f6e0-4b57-9a26-134d23d5025a",
+          "debtors": {
+              "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": 21.75,
+              "94ffbea7-f6e0-4b57-9a26-134d23d5025a": 21.75,
+              "51cf8cd6-09e0-48dc-95e4-f3952f7cb844": 21.75,
+              "1e4e2cef-885e-444d-83da-ed6a8bbdeadd": 21.75
+          }
+      },
+      {
+          "id": "1811f32c-ac0a-4a24-b6ca-e6989e0dbc16",
+          "expenseName": "Pineapple",
+          "amount": 8,
+          "creditor": "465ba762-869d-49fb-8938-47941fbc16ba",
+          "debtors": {
+              "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": 2,
+              "94ffbea7-f6e0-4b57-9a26-134d23d5025a": 2,
+              "51cf8cd6-09e0-48dc-95e4-f3952f7cb844": 2,
+              "1e4e2cef-885e-444d-83da-ed6a8bbdeadd": 2
+          }
+      },
+      {
+          "id": "143c981e-fe07-4d6c-a30c-b56c980aba33",
+          "expenseName": "Donuts",
+          "amount": 12,
+          "creditor": "f313dd73-7f67-4c3b-960b-d083b7a5ab0c",
+          "debtors": {
+              "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": 6,
+              "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8": 6
+          }
+      },
+      {
+          "id": "d5ec4f37-db0f-4282-bc9d-911b0704892f",
+          "expenseName": "Drinks",
+          "amount": 29,
+          "creditor": "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8",
+          "debtors": {
+              "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": 4.833333333333333,
+              "94ffbea7-f6e0-4b57-9a26-134d23d5025a": 4.833333333333333,
+              "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8": 4.833333333333333,
+              "465ba762-869d-49fb-8938-47941fbc16ba": 4.833333333333333,
+              "51cf8cd6-09e0-48dc-95e4-f3952f7cb844": 4.833333333333333,
+              "1e4e2cef-885e-444d-83da-ed6a8bbdeadd": 4.833333333333333
+          }
+      },
+      {
+          "id": "80ff1b2b-a55a-42c6-9230-ec21d10a89e9",
+          "expenseName": "Beer",
+          "amount": 28,
+          "creditor": "1e4e2cef-885e-444d-83da-ed6a8bbdeadd",
+          "debtors": {
+              "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": 7,
+              "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8": 7,
+              "465ba762-869d-49fb-8938-47941fbc16ba": 7,
+              "1e4e2cef-885e-444d-83da-ed6a8bbdeadd": 7
+          }
+      },
+      {
+          "id": "92d1e945-9e5e-4147-815b-71201c4b7592",
+          "expenseName": "Dinner day 1",
+          "amount": 78,
+          "creditor": "94ffbea7-f6e0-4b57-9a26-134d23d5025a",
+          "debtors": {
+              "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": 13,
+              "94ffbea7-f6e0-4b57-9a26-134d23d5025a": 13,
+              "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8": 13,
+              "465ba762-869d-49fb-8938-47941fbc16ba": 13,
+              "51cf8cd6-09e0-48dc-95e4-f3952f7cb844": 13,
+              "1e4e2cef-885e-444d-83da-ed6a8bbdeadd": 13
+          }
+      },
+      {
+          "id": "1ef28e53-fc42-4c07-8a6b-3855b40e4209",
+          "expenseName": "Hotel",
+          "amount": 382,
+          "creditor": "465ba762-869d-49fb-8938-47941fbc16ba",
+          "debtors": {
+              "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": 63.666666666666664,
+              "94ffbea7-f6e0-4b57-9a26-134d23d5025a": 63.666666666666664,
+              "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8": 63.666666666666664,
+              "465ba762-869d-49fb-8938-47941fbc16ba": 63.666666666666664,
+              "51cf8cd6-09e0-48dc-95e4-f3952f7cb844": 63.666666666666664,
+              "1e4e2cef-885e-444d-83da-ed6a8bbdeadd": 63.666666666666664
+          }
+      },
+      {
+          "id": "0e553788-9982-4915-8a5a-5a2cb7a649ea",
+          "expenseName": "Gas to Berlin",
+          "amount": 80,
+          "creditor": "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8",
+          "debtors": {
+              "f313dd73-7f67-4c3b-960b-d083b7a5ab0c": 13.333333333333334,
+              "94ffbea7-f6e0-4b57-9a26-134d23d5025a": 13.333333333333334,
+              "99d9d03b-3adb-40cf-b56e-c68db8ec4ff8": 13.333333333333334,
+              "465ba762-869d-49fb-8938-47941fbc16ba": 13.333333333333334,
+              "51cf8cd6-09e0-48dc-95e4-f3952f7cb844": 13.333333333333334,
+              "1e4e2cef-885e-444d-83da-ed6a8bbdeadd": 13.333333333333334
+          }
+      }
+  ]
 }
