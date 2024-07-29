@@ -18,6 +18,7 @@ export default function AppRoutes({
   updateExpense,
   finalTransactions,
   deleteGroup,
+  deleteExpense,
   selectedCurrency,
   updateCurrency,
 }) {
@@ -50,6 +51,7 @@ export default function AppRoutes({
             updateGroup={updateGroup}
             updateExpense={updateExpense}
             deleteGroup={deleteGroup}
+            deleteExpense={deleteExpense}
             selectedCurrency={selectedCurrency}
           />
         }

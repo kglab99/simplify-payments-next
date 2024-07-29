@@ -33,6 +33,7 @@ const Group = ({
   expenses,
   updateGroup,
   deleteGroup,
+  deleteExpense,
   finalTransactions,
   selectedCurrency,
 }) => {
@@ -60,6 +61,7 @@ const Group = ({
   const [updatedUsers, setUpdatedUsers] = useState(group.users);
   const [newUserName, setNewUserName] = useState("");
   const [isEditingExpenseOpen, setIsEditingExpense] = useState(false);
+  const [expenseToDelete, setExpenseToDelete] = useState(null);
 
   // Retrieve expenses and transactions
   const groupExpenses = expenses[groupId] || [];
@@ -90,6 +92,16 @@ const Group = ({
   const handleSaveGroupChanges = () => {
     updateGroup(groupId, updatedGroupName, updatedUsers);
     setIsEditingGroup(false);
+  };
+
+  const handleDeleteExpense = () => {
+    if (expenseToDelete) {
+      console.log(groupId);
+      deleteExpense(groupId, expenseToDelete);
+      setExpenseToDelete(null);
+      onDeleteExpenseOpenChange();
+      setIsEditingExpense(false);
+    }
   };
 
   const handleAddNewUser = () => {
@@ -160,7 +172,11 @@ const Group = ({
                           </div>
                           <div className="flex justify-end">
                             <Button
-                              onPress={() => setIsEditingExpense(true)}
+                              onPress={() => {
+                                setIsEditingExpense(true);
+                                setExpenseToDelete(expense.id);
+                                console.log(expenseToDelete);
+                              }}
                               variant="light"
                               isIconOnly
                               size="md"
@@ -257,7 +273,7 @@ const Group = ({
         <ConfirmDeleteExpenseModal
           isDeleteExpenseOpen={isDeleteExpenseOpen}
           onDeleteExpenseOpenChange={onDeleteExpenseOpenChange}
-          handleDeleteExpense={handleDeleteGroup}
+          handleDeleteExpense={handleDeleteExpense}
         />
 
         <EditGroupModal

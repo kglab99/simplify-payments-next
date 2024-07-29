@@ -14,10 +14,9 @@ export default function App() {
     addGroup,
     addExpense,
     updateGroup,
-    deleteExpense,
-    updateExpense,
     finalTransactions,
     deleteGroup,
+    deleteExpense,
     selectedCurrency,
     updateCurrency,
   } = useAppState();
@@ -31,7 +30,7 @@ export default function App() {
         addGroup={addGroup}
         addExpense={addExpense}
         updateGroup={updateGroup}
-        updateExpense={updateExpense}
+        // updateExpense={updateExpense}
         finalTransactions={finalTransactions}
         deleteGroup={deleteGroup}
         selectedCurrency={selectedCurrency}

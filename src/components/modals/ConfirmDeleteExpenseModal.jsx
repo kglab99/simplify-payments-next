@@ -10,7 +10,7 @@ import {
   const ConfirmDeleteExpenseModal = ({
     isDeleteExpenseOpen,
     onDeleteExpenseOpenChange,
-    handleDeleteExpense,
+    handleDeleteExpense
   }) => {
     return (
       <Modal
@@ -20,10 +20,10 @@ import {
         radius="none"
       >
         <ModalContent className="m-0 rounded-t-lg">
-          <ModalHeader>Confirm Delete Group</ModalHeader>
+          <ModalHeader>Confirm Delete Expense</ModalHeader>
           <ModalBody>
             <p>
-              Are you sure you want to delete this group? This action cannot be undone.
+              Are you sure you want to delete this expense? This action cannot be undone.
             </p>
           </ModalBody>
           <ModalFooter>
@@ -33,7 +33,10 @@ import {
                 size="md"
                 radius="sm"
                 className="text-black"
-                onPress={onDeleteExpenseOpenChange}
+                onPress={() => {
+                    onDeleteExpenseOpenChange
+                    
+                }}
               >
                 Cancel
               </Button>
