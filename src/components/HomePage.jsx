@@ -85,11 +85,12 @@ export default function HomePage({ groups, selectedCurrency, updateCurrency }) {
         </Tabs>
       </div>
 
-      <Link className="self-center mt-4 mb-4" to="/create-group">
+      <Link to="/create-group">
         <Button
           variant="flat"
           size="md"
           radius="sm"
+          className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50"
           startContent={<AddIcon />}
           aria-label="Create new group"
         >
