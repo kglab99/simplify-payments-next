@@ -20,6 +20,7 @@ export default function App() {
     deleteExpense,
     selectedCurrency,
     updateCurrency,
+    calculateTotalGroupExpenses
   } = useAppState();
 
   return (
@@ -38,6 +39,7 @@ export default function App() {
         deleteExpense={deleteExpense}
         updateCurrency={updateCurrency}
         editExpense={editExpense}
+        calculateTotalGroupExpenses={calculateTotalGroupExpenses}
       />
     </Suspense>
   );

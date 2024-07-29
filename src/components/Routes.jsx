@@ -22,6 +22,7 @@ export default function AppRoutes({
   editExpense,
   selectedCurrency,
   updateCurrency,
+  calculateTotalGroupExpenses
 }) {
   return (
     <Routes>
@@ -55,6 +56,7 @@ export default function AppRoutes({
             deleteGroup={deleteGroup}
             deleteExpense={deleteExpense}
             selectedCurrency={selectedCurrency}
+            calculateTotalGroupExpenses={calculateTotalGroupExpenses}
           />
         }
       />

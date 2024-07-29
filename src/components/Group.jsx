@@ -37,6 +37,7 @@ const Group = ({
   editExpense,
   finalTransactions,
   selectedCurrency,
+  calculateTotalGroupExpenses
 }) => {
   const { groupId } = useParams();
   const group = groups.find((group) => group.id === groupId);
@@ -71,8 +72,10 @@ const Group = ({
   const sortedTransactions = [...groupTransactions].sort(
     (a, b) => b.amount - a.amount
   );
-
+  
   const [expenseToEditContent, setExpenseToEditContent] = useState(null);
+
+  const groupExpensesTotal = calculateTotalGroupExpenses(groupId);
 
   useEffect(() => {
     const foundExpense = groupExpenses.find(
@@ -257,7 +260,10 @@ const Group = ({
                 </div>
               </div>
             </Tab>
-            <Tab title="Stats"></Tab>
+            <Tab title="Stats">
+            <p className="font-medium">Total amount spend:</p>
+            <p>{selectedCurrency}{groupExpensesTotal}</p>
+            </Tab>
           </Tabs>
         </div>
         <AddExpenseModal
