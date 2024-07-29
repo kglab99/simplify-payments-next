@@ -171,7 +171,7 @@ const Group = ({
             <Tab title="Expenses">
               <Listbox>
                 {groupExpenses.map((expense, index) => (
-                  <ListboxItem showDivider key={index}>
+                  <ListboxItem showDivider key={index} className="pl-0">
                     <Accordion>
                       <AccordionItem
                         className="custom-accordion-item"
@@ -262,25 +262,27 @@ const Group = ({
               </div>
             </Tab>
             <Tab title="Stats">
-              <p className="font-medium">Total amount spend:</p>
-              <p>
-                {selectedCurrency}
-                {totalExpenses}
-              </p>
-              <p className="font-medium mt-4">Amount spend by each creditor:</p>
-              {Object.entries(totalExpensesByCreditor).map(([id, value]) => (
-                <p key={id}>
-                  {group.users[id]} spent {selectedCurrency}
-                  {value}
+              <div className="mx-2 my-2">
+                <p className="font-medium">Total amount spend:</p>
+                <p>
+                  {selectedCurrency}
+                  {totalExpenses}
                 </p>
-              ))}
-              <p className="font-medium mt-4">Amount owed by each debtor:</p>
-              {Object.entries(totalOwedByDebtor).map(([id, value]) => (
-                <p key={id}>
-                  {group.users[id]} owes {selectedCurrency}
-                  {value.toFixed(2)}
-                </p>
-              ))}
+                <p className="font-medium mt-4">Amount spend by each creditor:</p>
+                {Object.entries(totalExpensesByCreditor).map(([id, value]) => (
+                  <p key={id}>
+                    {group.users[id]} spent {selectedCurrency}
+                    {value}
+                  </p>
+                ))}
+                <p className="font-medium mt-4">Amount owed by each debtor:</p>
+                {Object.entries(totalOwedByDebtor).map(([id, value]) => (
+                  <p key={id}>
+                    {group.users[id]} owes {selectedCurrency}
+                    {value.toFixed(2)}
+                  </p>
+                ))}
+              </div>
             </Tab>
           </Tabs>
         </div>
