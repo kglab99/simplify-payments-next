@@ -128,38 +128,66 @@ export function useAppState() {
     });
   };
 
-  // New function to calculate total amount of expenses for a specific group
   const calculateTotalGroupExpenses = (groupId) => {
     // Check if the groupId is valid and exists in expenses
     if (!expenses[groupId]) {
-      console.error(
-        `Group with ID ${groupId} does not exist or has no expenses.`
-      );
-      return;
+      console.error(`Group with ID ${groupId} does not exist or has no expenses.`);
+      return {
+        totalExpenses: 0,
+        totalExpensesByCreditor: {},
+        totalOwedByDebtor: {},
+      };
     }
-
+  
     // Retrieve the expenses for the specified group
     const groupExpenses = expenses[groupId];
-
-    // Calculate the total amount of all expenses in this group
-    const totalExpenses = groupExpenses.reduce((total, expense) => {
-      // Convert amount to a number if it's a string
-      const amount =
-        typeof expense.amount === "string"
-          ? parseFloat(expense.amount)
-          : expense.amount;
-      return total + amount;
-    }, 0);
-
-    // Log the total amount of expenses with the selected currency
-    console.log(
-      `Total amount of expenses for group ${groupId}: ${selectedCurrency}${totalExpenses.toFixed(
-        2
-      )}`
+  
+    // Calculate the total amount spent by each creditor and the overall total
+    let totalExpenses = 0;
+    const totalExpensesByCreditor = {};
+    const totalOwedByDebtor = {};
+  
+    // Use the canceledReversedDebts to adjust the amounts
+    const { creditors, debtors } = canceledReversedDebts[groupId] || {
+      creditors: {},
+      debtors: {},
+    };
+  
+    groupExpenses.forEach((expense) => {
+      const amount = typeof expense.amount === "string" ? parseFloat(expense.amount) : expense.amount;
+      totalExpenses += amount; // Add to the overall total
+  
+      // Calculate total spent by each creditor
+      if (!totalExpensesByCreditor[expense.creditor]) {
+        totalExpensesByCreditor[expense.creditor] = 0;
+      }
+      totalExpensesByCreditor[expense.creditor] += amount;
+    });
+  
+    // Calculate the total owed by each debtor using canceledReversedDebts
+    Object.entries(debtors).forEach(([debtorId, amount]) => {
+      if (!totalOwedByDebtor[debtorId]) {
+        totalOwedByDebtor[debtorId] = 0;
+      }
+      totalOwedByDebtor[debtorId] += amount;
+    });
+  
+    // Sort totalExpensesByCreditor from highest to lowest amount
+    const sortedTotalExpensesByCreditor = Object.fromEntries(
+      Object.entries(totalExpensesByCreditor).sort(([, a], [, b]) => b - a)
     );
-
-    return totalExpenses
-  };
+  
+    // Sort totalOwedByDebtor from highest to lowest amount
+    const sortedTotalOwedByDebtor = Object.fromEntries(
+      Object.entries(totalOwedByDebtor).sort(([, a], [, b]) => b - a)
+    );
+  
+    return { 
+      totalExpenses, 
+      totalExpensesByCreditor: sortedTotalExpensesByCreditor, 
+      totalOwedByDebtor: sortedTotalOwedByDebtor 
+    };
+  };  
 
   const deleteGroup = (groupId) => {
     setGroups((prevGroups) =>
@@ -190,6 +218,6 @@ export function useAppState() {
     deleteExpense,
     selectedCurrency,
     updateCurrency,
-    calculateTotalGroupExpenses
+    calculateTotalGroupExpenses,
   };
 }

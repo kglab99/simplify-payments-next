@@ -37,7 +37,7 @@ const Group = ({
   editExpense,
   finalTransactions,
   selectedCurrency,
-  calculateTotalGroupExpenses
+  calculateTotalGroupExpenses,
 }) => {
   const { groupId } = useParams();
   const group = groups.find((group) => group.id === groupId);
@@ -72,10 +72,11 @@ const Group = ({
   const sortedTransactions = [...groupTransactions].sort(
     (a, b) => b.amount - a.amount
   );
-  
+
   const [expenseToEditContent, setExpenseToEditContent] = useState(null);
 
-  const groupExpensesTotal = calculateTotalGroupExpenses(groupId);
+  const { totalExpenses, totalExpensesByCreditor, totalOwedByDebtor } =
+    calculateTotalGroupExpenses(groupId);
 
   useEffect(() => {
     const foundExpense = groupExpenses.find(
@@ -261,8 +262,25 @@ const Group = ({
               </div>
             </Tab>
             <Tab title="Stats">
-            <p className="font-medium">Total amount spend:</p>
-            <p>{selectedCurrency}{groupExpensesTotal}</p>
+              <p className="font-medium">Total amount spend:</p>
+              <p>
+                {selectedCurrency}
+                {totalExpenses}
+              </p>
+              <p className="font-medium mt-4">Amount spend by each creditor:</p>
+              {Object.entries(totalExpensesByCreditor).map(([id, value]) => (
+                <p key={id}>
+                  {group.users[id]} spent {selectedCurrency}
+                  {value}
+                </p>
+              ))}
+              <p className="font-medium mt-4">Amount owed by each debtor:</p>
+              {Object.entries(totalOwedByDebtor).map(([id, value]) => (
+                <p key={id}>
+                  {group.users[id]} owes {selectedCurrency}
+                  {value.toFixed(2)}
+                </p>
+              ))}
             </Tab>
           </Tabs>
         </div>
