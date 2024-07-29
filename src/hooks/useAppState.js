@@ -14,7 +14,7 @@ export function useAppState() {
 
   const [selectedCurrency, setSelectedCurrency] = useState(() => {
     const storedCurrency = localStorage.getItem("selectedCurrency");
-    return storedCurrency ? storedCurrency : "USD";
+    return storedCurrency ? storedCurrency : "$";
   });
 
   const creditedExpenses = useMemo(() => cleanExpenses(expenses), [expenses]);
