@@ -2,16 +2,30 @@
 
 ## [Live preview](https://simplify-payments.netlify.app/)
 
-**Simplify Payments Next** is a web application that helps users manage group expenses and simplify transactions. The app allows users to create groups, add expenses, and settle debts easily. This project is built with React, using NextUI for the UI components and React Router for routing.
+**Simplify Payments Next** is a modern web application designed to streamline the management of group expenses and transactions. With this application, users can easily create and manage groups, track and settle expenses, and handle transactions with ease. Built using React, this app leverages NextUI for a sleek user interface and React Router for seamless navigation.
 
 ## Features
 
-- Create and manage groups.
-- Add and update expenses for groups.
-- Calculate debts and settlements automatically.
+### Group Management
+- Create, edit, and delete groups.
+- Manage group members and track expenses.
+
+### Expense Tracking
+- Add, update, and delete expenses within each group.
+- View detailed expense breakdowns.
+
+### Automatic Calculations
+- Automatically calculate debts and settlements between group members.
+
+### Currency Management
 - Select and update the currency for transactions.
-- Responsive UI using NextUI components.
-- Persistant stage management using local storage.
+
+### Responsive Design
+- Enjoy a responsive and user-friendly interface built with NextUI and TailwindCSS.
+
+### Persistent State
+- Local storage is used to persist group and expense data, ensuring that your information is saved between sessions.
+
 
 ## Technologies Used
 
